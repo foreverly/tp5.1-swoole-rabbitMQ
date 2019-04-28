@@ -1,0 +1,144 @@
+<!DOCTYPE>
+<html>
+<head>
+	<title>测试页面</title>
+</head>	
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<style type="text/css">
+
+#mgx-box{
+	/*border: 1px solid;*/
+}
+
+#msgForm{
+	margin: 0 auto;
+	margin-top: 30px;
+	width: 300px;
+	border: 1px solid green;
+}
+
+.list-box{
+	margin: 0 auto;
+	margin-top: 30px;
+	width: 300px;
+	min-height: 500px;
+	border: 1px solid;
+}
+
+.label-input{
+	margin: 10px 0 20px 20px;
+}
+
+</style>
+
+<body>
+	<div id="mgx-box">
+		<form id="msgForm">		
+			<div class="label-input">
+				手机:
+				<input type="text" id="mobile" name="mobile" value="13888888888">
+			</div>		
+			<div class="label-input">
+				消息:
+				<input type="text" id="content" name="content" value="呼死你！">
+			</div>		
+			<div class="label-input">
+				<input class="submit-btn" type="button" value="50条">
+				<input class="submit-btn" type="button" value="100条">
+				<input class="submit-btn" type="button" value="500条">
+			</div>
+		</form>
+		<div class="list-box">
+			
+		</div>
+	</div>
+		
+</body>
+</html>
+
+<script type="text/javascript">
+
+// ws = new WebSocket("ws://www.tp-dev.com:2346");
+// ws2 = new WebSocket("ws://www.tp-dev.com:10086");
+// ws3 = new WebSocket("ws://www.tp-dev.com:10088");
+
+$(".submit-btn").on('click', function(){
+	var mobile = $("#mobile").val();
+	var content = $("#content").val();
+	var times = $(this).val().match(/\d+/)[0];
+	var data = {"mobile":mobile, "content":content, "times":times};
+
+	$.ajax({
+		type:"POST",
+		url:"/index.php/index/index/push",
+		data:data,
+		dataType:'json',
+		success:function(res){
+			console.log('ok!');
+		}
+	})
+
+	// ws.send(JSON.stringify(data));
+})
+
+
+
+
+console.log("ready");
+
+// ws.onopen = function() {
+//     console.log("连接成功");
+//     ws.send('tom');
+//     console.log("给服务端发送一个字符串：tom");
+// };
+
+// ws2.onmessage = function(e) {    
+//     var edata = JSON.parse(e.data);
+
+//     console.log(edata.content);
+// };
+
+// ws.onmessage = function(e) {
+//     handlMessage(e);
+// };
+
+// ws3.onmessage = function(e) {
+//     handlMessage(e);
+// };
+
+function handlMessage(e)
+{
+	var edata = JSON.parse(e.data);
+    var type = edata.type;
+
+    // console.log("收到服务端2的消息：" + edata.content);
+    
+	switch (type) {
+		case 'process':
+			console.log(edata);
+			var batchId = edata.batchId;
+		    var times = edata.total;
+		    var process = edata.process;
+
+		    var className = "list-" + batchId
+		    var pstr = '批次:' + batchId + '&nbsp;&nbsp;<em>OK!(' + process + '/' + times + ')';
+		    var html = '<p class="list-line ' + className + '" ' + batchId + '>' + pstr + '</p>';
+		    
+		    if ($(".list-line").hasClass(className)) {
+		    	$("."+className).html(pstr);
+		    }else{
+		    	console.log(process)
+		    	$(".list-box").append(html);
+		    }
+
+			break;
+		case 'msg':
+			console.log(edata.content);
+			break;
+		 default:
+		 	 break;
+	}
+}
+
+</script>

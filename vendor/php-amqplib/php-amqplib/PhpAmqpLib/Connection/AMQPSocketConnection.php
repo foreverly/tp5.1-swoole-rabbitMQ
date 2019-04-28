@@ -19,6 +19,8 @@ class AMQPSocketConnection extends AbstractConnection
      * @param bool $keepalive
      * @param int $write_timeout
      * @param int $heartbeat
+     * @param float $channel_rpc_timeout
+     * @throws \Exception
      */
     public function __construct(
         $host,
@@ -30,11 +32,16 @@ class AMQPSocketConnection extends AbstractConnection
         $login_method = 'AMQPLAIN',
         $login_response = null,
         $locale = 'en_US',
-        $read_timeout = 3,
+        $read_timeout = 130,
         $keepalive = false,
-        $write_timeout = 3,
-        $heartbeat = 0
+        $write_timeout = 130,
+        $heartbeat = 60,
+        $channel_rpc_timeout = 0.0
     ) {
+        if ($channel_rpc_timeout > $read_timeout) {
+            throw new \InvalidArgumentException('channel RPC timeout must not be greater than I/O read timeout');
+        }
+
         $io = new SocketIO($host, $port, $read_timeout, $keepalive, $write_timeout, $heartbeat);
 
         parent::__construct(
@@ -46,7 +53,9 @@ class AMQPSocketConnection extends AbstractConnection
             $login_response,
             $locale,
             $io,
-            $heartbeat
+            $heartbeat,
+            max($read_timeout, $write_timeout),
+            $channel_rpc_timeout
         );
     }
 
@@ -60,13 +69,13 @@ class AMQPSocketConnection extends AbstractConnection
         $locale = isset($options['locale']) ?
                         $options['locale'] : 'en_US';
         $read_timeout = isset($options['read_timeout']) ?
-                              $options['read_timeout'] : 3;
+                              $options['read_timeout'] : 130;
         $keepalive = isset($options['keepalive']) ?
                            $options['keepalive'] : false;
         $write_timeout = isset($options['write_timeout']) ?
-                               $options['write_timeout'] : 3;
+                               $options['write_timeout'] : 130;
         $heartbeat = isset($options['heartbeat']) ?
-                           $options['heartbeat'] : 0;
+                           $options['heartbeat'] : 60;
         return new static($host,
                           $port,
                           $user,

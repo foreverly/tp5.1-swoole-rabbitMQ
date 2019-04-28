@@ -3,7 +3,9 @@ namespace PhpAmqpLib\Channel;
 
 use PhpAmqpLib\Connection\AbstractConnection;
 use PhpAmqpLib\Exception\AMQPChannelClosedException;
+use PhpAmqpLib\Exception\AMQPConnectionClosedException;
 use PhpAmqpLib\Exception\AMQPInvalidFrameException;
+use PhpAmqpLib\Exception\AMQPNoDataException;
 use PhpAmqpLib\Exception\AMQPNotImplementedException;
 use PhpAmqpLib\Exception\AMQPOutOfBoundsException;
 use PhpAmqpLib\Exception\AMQPOutOfRangeException;
@@ -22,6 +24,10 @@ abstract class AbstractChannel
     const PROTOCOL_080 = '0.8';
     const PROTOCOL_091 = '0.9.1';
 
+    /**
+     * @var string
+     * @deprecated
+     */
     public static $PROTOCOL_CONSTANTS_CLASS;
 
     /** @var array */
@@ -213,7 +219,7 @@ abstract class AbstractChannel
     }
 
     /**
-     * @param int $timeout
+     * @param int|float|null $timeout
      * @return array|mixed
      */
     public function next_frame($timeout = 0)
@@ -318,9 +324,10 @@ abstract class AbstractChannel
      *
      * @param array $allowed_methods
      * @param bool $non_blocking
-     * @param int $timeout
+     * @param int|float|null $timeout
      * @throws \PhpAmqpLib\Exception\AMQPOutOfBoundsException
      * @throws \PhpAmqpLib\Exception\AMQPRuntimeException
+     * @throws \PhpAmqpLib\Exception\AMQPTimeoutException
      * @throws \ErrorException
      * @return mixed
      */
@@ -333,9 +340,24 @@ abstract class AbstractChannel
             return $this->dispatch_deferred_method($deferred['queued_method']);
         }
 
+        // timeouts must be deactivated for non-blocking actions
+        if (true === $non_blocking) {
+            $timeout = null;
+        }
+
         // No deferred methods?  wait for new ones
         while (true) {
-            list($frame_type, $payload) = $this->next_frame($timeout);
+            try {
+                list($frame_type, $payload) = $this->next_frame($timeout);
+            } catch (AMQPNoDataException $e) {
+                // no data ready for non-blocking actions - stop and exit
+                break;
+            } catch (AMQPConnectionClosedException $exception) {
+                if ($this instanceof AMQPChannel) {
+                    $this->do_close();
+                }
+                throw $exception;
+            }
 
             $this->validate_method_frame($frame_type);
             $this->validate_frame_payload($payload);

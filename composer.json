@@ -25,7 +25,8 @@
         "topthink/think-worker": "^2.0",
         "topthink/think-mongo": "^2.0",
         "topthink/think-queue": "^2.0",
-        "jayazhao/think-queue-rabbitmq": "dev-master"
+        "jayazhao/think-queue-rabbitmq": "dev-master",
+        "php-amqplib/php-amqplib": "^2.9"
     },
     "autoload": {
         "psr-4": {
@@ -37,5 +38,11 @@
     },
     "config": {
         "preferred-install": "dist"
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
     }
 }
