@@ -24,7 +24,8 @@
         "topthink/think-migration": "^2.0",
         "topthink/think-worker": "^2.0",
         "topthink/think-mongo": "^2.0",
-        "topthink/think-queue": "^2.0"
+        "topthink/think-queue": "^2.0",
+        "jayazhao/think-queue-rabbitmq": "dev-master"
     },
     "autoload": {
         "psr-4": {

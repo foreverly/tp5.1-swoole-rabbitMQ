@@ -8,9 +8,9 @@ class ComposerStaticInit50627e7b83feda0642d2a013e58fc540
 {
     public static $files = array (
         '9b552a3cc426e3287cc811caefa3cf53' => __DIR__ . '/..' . '/topthink/think-helper/src/helper.php',
+        'cc56288302d9df745d97c934d6a6e5f0' => __DIR__ . '/..' . '/topthink/think-queue/src/common.php',
         '1cfd2761b63b0a29ed23657ea394cb2d' => __DIR__ . '/..' . '/topthink/think-captcha/src/helper.php',
         'ddc3cd2a04224f9638c5d0de6a69c7e3' => __DIR__ . '/..' . '/topthink/think-migration/src/config.php',
-        'cc56288302d9df745d97c934d6a6e5f0' => __DIR__ . '/..' . '/topthink/think-queue/src/common.php',
         'ffc1d7141d4fcbaeb47a6929f0811ed1' => __DIR__ . '/..' . '/topthink/think-worker/src/command.php',
     );
 
@@ -25,6 +25,10 @@ class ComposerStaticInit50627e7b83feda0642d2a013e58fc540
             'think\\captcha\\' => 14,
             'think\\' => 6,
         ),
+        'j' => 
+        array (
+            'jayazhao\\' => 9,
+        ),
         'a' => 
         array (
             'app\\' => 4,
@@ -35,11 +39,23 @@ class ComposerStaticInit50627e7b83feda0642d2a013e58fc540
         ),
         'P' => 
         array (
+            'PhpAmqpLib\\' => 11,
             'Phinx\\' => 6,
+        ),
+        'I' => 
+        array (
+            'Interop\\Queue\\' => 14,
+            'Interop\\Amqp\\' => 13,
         ),
         'G' => 
         array (
             'GatewayWorker\\' => 14,
+        ),
+        'E' => 
+        array (
+            'Enqueue\\Dsn\\' => 12,
+            'Enqueue\\AmqpTools\\' => 18,
+            'Enqueue\\AmqpLib\\' => 16,
         ),
     );
 
@@ -73,6 +89,10 @@ class ComposerStaticInit50627e7b83feda0642d2a013e58fc540
             0 => __DIR__ . '/..' . '/topthink/think-image/src',
             1 => __DIR__ . '/..' . '/topthink/think-queue/src',
         ),
+        'jayazhao\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/jayazhao/think-queue-rabbitmq/src',
+        ),
         'app\\' => 
         array (
             0 => __DIR__ . '/../..' . '/application',
@@ -81,13 +101,37 @@ class ComposerStaticInit50627e7b83feda0642d2a013e58fc540
         array (
             0 => __DIR__ . '/..' . '/workerman/workerman',
         ),
+        'PhpAmqpLib\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-amqplib/php-amqplib/PhpAmqpLib',
+        ),
         'Phinx\\' => 
         array (
             0 => __DIR__ . '/..' . '/topthink/think-migration/phinx/src/Phinx',
         ),
+        'Interop\\Queue\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/queue-interop/queue-interop/src',
+        ),
+        'Interop\\Amqp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/queue-interop/amqp-interop/src',
+        ),
         'GatewayWorker\\' => 
         array (
             0 => __DIR__ . '/..' . '/workerman/gateway-worker/src',
+        ),
+        'Enqueue\\Dsn\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/enqueue/dsn',
+        ),
+        'Enqueue\\AmqpTools\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/enqueue/amqp-tools',
+        ),
+        'Enqueue\\AmqpLib\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/enqueue/amqp-lib',
         ),
     );
 
