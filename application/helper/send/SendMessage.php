@@ -7,7 +7,7 @@ namespace app\help\send;
 class SendMessage implements SendInterface 
 {
 	
-	function __construct($config)
+	function __construct(array $config)
 	{
 		# code...
 	}

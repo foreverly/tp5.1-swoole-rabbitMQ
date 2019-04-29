@@ -9,7 +9,9 @@
 ## 第三步
 dos模式下进入目录rabbitMQ\sbin执行以下命令
 > rabbitmq-service.bat stop
+
 > rabbitmq-service.bat install
+
 > rabbitmq-service.bat start
 
 输入网址打开[amqp](http://127.0.0.1:15672/#/)，用户guest，密码guest

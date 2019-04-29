@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 
+use app\RabbitMQ\SendMessage;
 use think\Controller;
 use think\Request;
 use think\Queue;
@@ -67,6 +68,33 @@ class Index extends Controller
 	    }else{
 	        return ajaxError('Oops, something went wrong.');
 	    }
+    }
+
+    public function sendMessage()
+    {
+    	$mobile = $this->request->post('mobile');
+        $content = $this->request->post('content');
+        $times = (int)$this->request->post('times', 1);
+        $pdata = $this->request->post();
+
+        $sendMessage = new SendMessage();
+
+        for ($i=0; $i < $times; $i++) { 
+        	$data = [
+        		'type' => 'MSG',
+        		'data' => [
+        			'mobile' => $mobile,
+        			'content' => $content
+        		]
+        	];
+
+        	$routingKey = 'key_1';
+        	$exchangeName = 'ex1';
+
+        	$sendMessage->push($data, $routingKey, $exchangeName);
+        }
+
+        return ajaxSuccess([]);
     }
 
     public function hello($name = 'ThinkPHP5')

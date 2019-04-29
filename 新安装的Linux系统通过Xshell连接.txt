@@ -1,0 +1,15 @@
+新安装的Linux系统通过Xshell连接
+
+1. VM -> 编辑 -> 虚拟网络编辑器 -> VMnet8 -> 更改设置 -> NAT设置 ->记录网关IP
+
+2. 控制面板 -> 网络连接 -> VMnet8 -> 属性 -> IPv4 -> 使用下面的IP地址(默认网关输入上面记录的网关)
+
+3. 安装ssh客户端：sudo apt install openssh-server
+
+4. linux中：
+
+ 1). sudo vim /etc/ssh/sshd_config
+ 2). 找到Authentication部分，找到被注释的“PermitRootLogin without-password”
+ 3). 在后面加入：PermitRootLogin yes
+ 4). 重启：service ssh restart
+ 5). 修改root的密码，开启root用户：sudo passwd root

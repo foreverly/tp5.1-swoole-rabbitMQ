@@ -71,7 +71,7 @@ $(".submit-btn").on('click', function(){
 
 	$.ajax({
 		type:"POST",
-		url:"/index.php/index/index/push",
+		url:"/index.php/index/index/sendMessage",
 		data:data,
 		dataType:'json',
 		success:function(res){

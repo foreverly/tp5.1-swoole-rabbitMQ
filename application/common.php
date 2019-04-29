@@ -20,13 +20,17 @@ if (!function_exists("dd")) {
 }
 
 if (!function_exists("ajaxSuccess")) {
-	function ajaxSuccess(array $data, $msg){
-		return [
+	function ajaxSuccess(array $data, $msg = ''){
+		$rdata = [
 			'status' => 'success',
 			'code' => 200,
-			'data' => $data,
-			'msg' => $msg
+			'data' => $data
 		];
+
+		if ($msg != '') {
+			$rdata['msg'] = $msg;
+		}
+		return $rdata;
 	}
 }
 
