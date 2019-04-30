@@ -37,11 +37,10 @@ class SendMessage
     public function push($data = [], $routingKey = 'key_1', $exchangeName = 'ex1', $exchangeType = AMQP_EX_TYPE_DIRECT)
     {
         // 用来绑定交换机和队列
-        $routingKey = 'key_1';
-
+        // $routingKey = 'key_1';
         $ex = new \AMQPExchange($this->channel);
         //  交换机名称
-        $exchangeName = 'ex1';
+        // $exchangeName = 'ex1';
         $ex->setName($exchangeName);
 
         // 设置交换机类型 AMQP_EX_TYPE_DIRECT
