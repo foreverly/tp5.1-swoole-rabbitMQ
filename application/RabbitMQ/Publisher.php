@@ -3,40 +3,40 @@ namespace app\RabbitMQ;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-require_once __DIR__ . '/vendor/autoload.php';
-
-/**
- * 发布者
- */
 class Publisher
 {
-	private $connection;
-	private $channel;
-	private $queueName;
+    const exchange = 'router';
+    const queue = 'msgs';
+    const HOST = '127.0.0.1';
+    const PORT = '5672';
+    const USER = 'admin';
+    const PASS = 'admin';
+    const VHOST = '/';
 
-	public function __construct($queue_name = 'hello')
-	{
-		// 连接服务器
-		$this->connection = new AMQPStreamConnection('127.0.0.1', 5672, 'admin', 'admin');
-		// 创建信道
-		$this->channel = $this->connection->channel();
-		$this->queueName = $queue_name;
-		// 创建队列
-		$this->channel->queue_declare($queue_name, false, false, false, false);
-	}
+    public static  function pushMessage($data)
+    {
+        $connection = new AMQPStreamConnection(self::HOST, self::PORT, self::USER, self::PASS, self::VHOST);
+        $channel = $connection->channel();
 
-	public function push($msg = 'Hello World!')
-	{
-		// $msg = new AMQPMessage('Hello World!');
-		$msg = new AMQPMessage($msg);
-		$channel->basic_publish($msg, '', $this->queueName);
+        $channel->queue_declare(self::queue, false, true, false, false);
+        $channel->exchange_declare(self::exchange, 'direct', false, true, false);
+        $channel->queue_bind(self::queue, self::exchange);
 
-		echo " [x] Sent '{$msg}'\n";
+        $messageBody = $data;
+        $message = new AMQPMessage($messageBody, array('content_type' => 'text/plain', 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT));
 
-		$this->channel->close();
-		$this->connection->close();
-	}
+        $channel->basic_publish($message, self::exchange);
+        $channel->close();
+        $connection->close();
+
+        return "ok";
+    }
 }
+
+$p = new Publisher();
+echo $p->pushMessage(json_encode(['mobile' => '1388888888']));
+
 
 		

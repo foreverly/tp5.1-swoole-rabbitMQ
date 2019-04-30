@@ -13,15 +13,15 @@ $conn = [
 
 
 //创建连接和channel
-$conn = new \AMQPConnection($conn);
+$conn = new AMQPConnection($conn);
 if(!$conn->connect()) {
     die("Cannot connect to the broker!\n");
 }
-$channel = new \AMQPChannel($conn);
+$channel = new AMQPChannel($conn);
 $exchangeName = 'ex1';
 
 //创建交换机
-$ex = new \AMQPExchange($channel);
+$ex = new AMQPExchange($channel);
 $ex->setName($exchangeName);
 
 $ex->setType(AMQP_EX_TYPE_DIRECT); //direct类型
@@ -30,7 +30,7 @@ $ex->declareExchange();
 
 //  创建队列
 $queueName = 'queue1';
-$q = new \AMQPQueue($channel);
+$q = new AMQPQueue($channel);
 $q->setName($queueName);
 $q->setFlags(AMQP_DURABLE);
 $q->declareQueue();

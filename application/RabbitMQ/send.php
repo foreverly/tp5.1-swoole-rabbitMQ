@@ -13,16 +13,16 @@ $conn = [
 ];
 
 //创建连接和channel
-$conn = new \AMQPConnection($conn);
+$conn = new AMQPConnection($conn);
 if(!$conn->connect()) {
     die("Cannot connect to the broker!\n");
 }
-$channel = new \AMQPChannel($conn);
+$channel = new AMQPChannel($conn);
 
 // 用来绑定交换机和队列
 $routingKey = 'key_1';
 
-$ex = new \AMQPExchange($channel);
+$ex = new AMQPExchange($channel);
 //  交换机名称
 $exchangeName = 'ex1';
 $ex->setName($exchangeName);
