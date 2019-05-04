@@ -1,7 +1,7 @@
 <?php
 namespace app\index\controller;
 
-use app\RabbitMQ\SendMessage;
+use app\common\tool\RabbitMQTool;
 use think\Controller;
 use think\Request;
 use think\Queue;
@@ -43,41 +43,12 @@ class Index extends Controller
         return $this->fetch();
     }
 
-    public function push()
-    {
-        
-        $mobile = $this->request->post('mobile');
-        $content = $this->request->post('content');
-        $times = (int)$this->request->post('times', 1);
-        $pdata = $this->request->post();
-
-        // 1.当前任务将由哪个类来负责处理。 
-	    //   当轮到该任务时，系统将生成一个该类的实例，并调用其 fire 方法
-	    // to do 根据消息类型自动按照先定义好消息名称与消费者类名的映射关系调用类
-	    $jobHandlerClassName  = 'application\job\Job1'; 
-	    // 2.当前任务归属的队列名称，如果为新队列，会自动创建
-	    $jobQueueName  	  = "testJobQueue"; 
-	    // 3.当前任务所需的业务数据 . 不能为 resource 类型，其他类型最终将转化为json形式的字符串
-	    //   ( jobData 为对象时，需要在先在此处手动序列化，否则只存储其public属性的键值对)
-	    $jobData       	  = [ 'ts' => time(), 'bizId' => uniqid() , 'a' => 1 ] ;
-	    // 4.将该任务推送到消息队列，等待对应的消费者去执行
-	    $isPushed = Queue::push( $jobHandlerClassName , $jobData , $jobQueueName );	
-	    // database 驱动时，返回值为 1|false  ;   redis 驱动时，返回值为 随机字符串|false
-	    if( $isPushed !== false ){  
-	        return ajaxSuccess([], date('Y-m-d H:i:s') . " a new Hello Job is Pushed to the MQ"."<br>");
-	    }else{
-	        return ajaxError('Oops, something went wrong.');
-	    }
-    }
-
     public function sendMessage()
     {
     	$mobile = $this->request->post('mobile');
         $content = $this->request->post('content');
         $times = (int)$this->request->post('times', 1);
         $pdata = $this->request->post();
-
-        $sendMessage = new SendMessage();
 
         for ($i=0; $i < $times; $i++) { 
         	$data = [
@@ -88,10 +59,8 @@ class Index extends Controller
         		]
         	];
 
-        	$routingKey = 'key_1';
-        	$exchangeName = 'ex1';
-
-        	$sendMessage->push($data, $routingKey, $exchangeName);
+            // 写入队列
+            RabbitMQTool::instance('test')->wMq($data);
         }
 
         return ajaxSuccess([]);
