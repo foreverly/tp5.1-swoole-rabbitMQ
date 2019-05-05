@@ -57,7 +57,7 @@ class Timer
                     RabbitMQTool::instance('send_msg_error')->rMq($data[0]);
                 }
             } else {
-                echo 'list is empty';
+                echo 'queue is empty';
             }
         });
     }
