@@ -1,4 +1,5 @@
 <?php
+namespace app\swoole\controller;
 
 /**
  * Timer
@@ -9,6 +10,7 @@ class TimerServer
 
 	function __construct(argument)
 	{
+        var_dump(111);exit;
 		$this->serv = new swoole_server("0.0.0.0", 9501);
 
 		$this->serv->set(array(

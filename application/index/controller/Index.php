@@ -1,7 +1,7 @@
 <?php
 namespace app\index\controller;
 
-use app\common\tool\RabbitMQTool;
+// use app\common\tool\RabbitMQTool;
 use think\Controller;
 use think\Request;
 use think\Queue;
