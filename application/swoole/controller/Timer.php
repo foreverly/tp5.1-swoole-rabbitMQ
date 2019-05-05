@@ -19,9 +19,9 @@ class Timer
         //     echo $this->handleTask($data[0]);
         // }
 
-		$this->serv = new swoole_server("0.0.0.0", 9501);
+        $this->serv = new swoole_server("0.0.0.0", 9501);
 
-		$this->serv->set(array(
+        $this->serv->set(array(
             'worker_num' => 8,
             'daemonize' => false,
             'max_request' => 10000,
@@ -30,11 +30,11 @@ class Timer
         ));
 
         $this->serv->on('WorkerStart', array($this, 'onWorkerStart'));
-      	$this->serv->on('Connect', array($this, 'onConnect'));
-      	$this->serv->on('Receive', array($this, 'onReceive'));
-      	$this->serv->on('Close', array($this, 'onClose'));
+        $this->serv->on('Connect', array($this, 'onConnect'));
+        $this->serv->on('Receive', array($this, 'onReceive'));
+        $this->serv->on('Close', array($this, 'onClose'));
 
-      	$this->serv->start();
+        $this->serv->start();
 	}
 
 	public function onWorkerStart( $serv , $worker_id) {
@@ -49,7 +49,7 @@ class Timer
                 $res = $this->handleTask($data[0]);
                 $end = microtime(true);
                 // 发送成功
-                if(!$res){
+                if($res){
                     echo '发送成功！' . json_encode($data[0]) . ', 耗时:'. round($end - $start, 3).'秒'.PHP_EOL;
                 }
                 // 发送失败，把发送失败的加入到失败队列中
