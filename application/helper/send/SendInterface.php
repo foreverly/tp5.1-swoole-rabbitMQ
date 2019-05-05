@@ -3,5 +3,5 @@ namespace app\helper\send;
 
 interface SendInterface
 {
-	public function send();
+	public function send($data);
 }

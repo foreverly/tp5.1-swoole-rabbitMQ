@@ -34,11 +34,22 @@
 
 <body>
 	<div id="mgx-box">
-		<form id="msgForm">		
+		<form id="msgForm">
 			<div class="label-input">
+				类型:
+				<select name="type" id="type-select">
+					<option value="mobile" selected="selected">手机</option>
+					<option value="email">邮箱</option>
+				</select>
+			</div>
+			<div class="label-input input-user input-mobile">
 				手机:
 				<input type="text" id="mobile" name="mobile" value="13888888888">
-			</div>		
+			</div>
+			<div class="label-input input-user input-email" style="display: none;">
+				邮箱:
+				<input type="text" id="email" name="email" value="phper@php.cn">
+			</div>
 			<div class="label-input">
 				消息:
 				<input type="text" id="content" name="content" value="呼死你！">
@@ -63,11 +74,23 @@
 // ws2 = new WebSocket("ws://www.tp-dev.com:10086");
 // ws3 = new WebSocket("ws://www.tp-dev.com:10088");
 
+$("#type-select").on('change', function(){
+	var cls = $(this).val();	
+	$(".input-user").hide();
+	$(".input-"+cls).show();
+})
+
 $(".submit-btn").on('click', function(){
+	var type = $("#type-select").val();
+	var email = $("#email").val();
 	var mobile = $("#mobile").val();
 	var content = $("#content").val();
 	var times = $(this).val().match(/\d+/)[0];
-	var data = {"mobile":mobile, "content":content, "times":times};
+	if (type == 'mobile') {
+		var data = {"type":type, "mobile":mobile, "content":content, "times":times};
+	}else{
+		var data = {"type":type, "email":email, "content":content, "times":times};
+	}	
 
 	$.ajax({
 		type:"POST",

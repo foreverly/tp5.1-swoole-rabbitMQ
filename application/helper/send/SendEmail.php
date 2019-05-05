@@ -1,5 +1,5 @@
 <?php
-namespace app\help\send;
+namespace app\helper\send;
 
 /**
  * 邮件发送
@@ -12,10 +12,16 @@ class SendEmail implements SendInterface
 		# code...
 	}
 
-	public function send()
+	public function send($data)
 	{
 		// to do 
-		sleep(1);
+		$pathname = __DIR__ . '/../../../runtime/temp/';
+		$filename = $pathname . 'test_send_eamil.log';
+
+		$log = "邮箱：{$data['email']}，发送内容：{$data['content']}\r\n";
+		
+		file_put_contents($filename, $log, FILE_APPEND);
+
 		return true;
 	}
 }

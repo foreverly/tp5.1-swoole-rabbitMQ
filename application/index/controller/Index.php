@@ -1,7 +1,9 @@
 <?php
 namespace app\index\controller;
 
-// use app\common\tool\RabbitMQTool;
+use app\common\tool\RabbitMQTool;
+use app\helper\send\SendMessage;
+use app\helper\send\SendEmail;
 use think\Controller;
 use think\Request;
 use think\Queue;
@@ -45,14 +47,31 @@ class Index extends Controller
 
     public function sendMessage()
     {
-    	$mobile = $this->request->post('mobile');
+        $type = $this->request->post('type', 'mobile');
+        $email = $this->request->post('email', '');
+    	$mobile = $this->request->post('mobile', '');
         $content = $this->request->post('content');
         $times = (int)$this->request->post('times', 1);
         $pdata = $this->request->post();
+        
+        switch ($type) {
+            case 'mobile':
+                $sms_config = [];
+                $sendClass = new SendMessage($sms_config);
+                break;            
+            case 'email':                  
+                $smtp_config = [];             
+                $sendClass = new SendEmail($smtp_config);
+                break;
+            default:
+                return ajaxError('暂不支持该发送类型');
+                break;
+        }
 
         for ($i=0; $i < $times; $i++) { 
         	$data = [
         		'type' => 'MSG',
+                'sendClass' => serialize($sendClass),
         		'data' => [
         			'mobile' => $mobile,
         			'content' => $content
@@ -60,7 +79,7 @@ class Index extends Controller
         	];
 
             // 写入队列
-            RabbitMQTool::instance('test')->wMq($data);
+            RabbitMQTool::instance('send_msg')->wMq($data);
         }
 
         return ajaxSuccess([]);

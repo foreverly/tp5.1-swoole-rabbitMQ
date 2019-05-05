@@ -16,9 +16,9 @@ class RabbitMQTool {
     private $mqConf;
 
     public function __construct($mqName)
-    {
+    {        
         // 获取rabbitmq所有配置
-        $rabbitMqConf = SelfConfig::getConfig('Source.rabbit_mq');
+        $rabbitMqConf = SelfConfig::getConfig('Source.rabbit_mq');        
         if (!isset($rabbitMqConf['rabbit_mq_queue'])) {
             die('没有定义Source.rabbit_mq');
         }
@@ -27,7 +27,7 @@ class RabbitMQTool {
         $this->conn = new AMQPStreamConnection(
             $rabbitMqConf['host'], $rabbitMqConf['port'], $rabbitMqConf['user'], $rabbitMqConf['pwd'], $rabbitMqConf['vhost']
         );
-
+        // var_dump($rabbitMqConf['rabbit_mq_queue']);exit;
         $channal = $this->conn->channel();
         if (!isset($rabbitMqConf['rabbit_mq_queue'][$mqName])) {
             die('没有定义'.$mqName);
@@ -63,6 +63,7 @@ class RabbitMQTool {
      * @return bool
      */
     public function wMq($data) {
+
         try {
             $data = json_encode($data, JSON_UNESCAPED_UNICODE);
             $msg = new AMQPMessage($data, ['content_type' => 'text/plain', 'delivery_mode' => 2]);
@@ -71,7 +72,9 @@ class RabbitMQTool {
             $this->closeConn();
             return false;
         }
+
         $this->closeConn();
+
         return true;
     }
 
@@ -81,16 +84,20 @@ class RabbitMQTool {
      * Description:
      * @throws \ErrorException
      */
-    public function rMq($num=1) {
-        $rData = [];
+    public function rMq($num = 1) {
+
+        $rData = [];        
         $callBack = function ($msg) use (&$rData){
             $rData[] = json_decode($msg->body, true);
         };
+
         for ($i=0;$i<$num;$i++) {
             $this->channel->basic_consume($this->mqConf['queue_name'], '', false, true, false, false, $callBack);
         }
+
         $this->channel->wait();
         $this->closeConn();
+
         return $rData;
     }
 

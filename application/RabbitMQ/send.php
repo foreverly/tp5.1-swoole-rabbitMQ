@@ -20,11 +20,11 @@ if(!$conn->connect()) {
 $channel = new AMQPChannel($conn);
 
 // 用来绑定交换机和队列
-$routingKey = 'key_1';
+$routingKey = 'que_test';
 
 $ex = new AMQPExchange($channel);
 //  交换机名称
-$exchangeName = 'ex1';
+$exchangeName = 'ex_test';
 $ex->setName($exchangeName);
 
 // 设置交换机类型
