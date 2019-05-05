@@ -1,9 +1,9 @@
 # tp5.1-swoole-rabbitMQ
 
-## 第一步
+## 一
 安装 erlang 和 rabbitMQ
 
-## 第二步
+## 二
 安装rabbitMQ可视化插件amqp
 
 1.windows安装
@@ -22,7 +22,7 @@
 > extension=amqp.so
 
 
-## 第三步
+## 三
 1.dos模式下进入目录rabbitMQ\sbin执行以下命令
 > rabbitmq-service.bat stop  
 
@@ -33,11 +33,11 @@
 2.输入网址打开[amqp](http://127.0.0.1:15672/#/)，用户:guest，密码:guest
 3.在[amqp](http://127.0.0.1:15672/#/)中添加新用户，用户名:admin，密码:admin，vhost:/
 
-## 第四步
+## 四
 安装composer依赖管理包，需开启php_sockets扩展
 > composer require php-amqplib/php-amqplib  
 
-## 第五步
+## 五
 
 1.去[Github](https://github.com/swoole/swoole-src)下载swoole扩展源码，编译安装
 > phpize
@@ -53,7 +53,7 @@
 编译安装完后，开启swoole扩展，修改php.ini添加
 > extension=swoole.so
 
-## 第六步
+## 六
 
 测试首页请求后，进入public，运行如下代码监听rabbitmq队列
 > php swoole.php
