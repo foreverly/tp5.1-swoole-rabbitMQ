@@ -11,9 +11,9 @@ class RabbitMQTool {
      * RabbitMq 工具
      */
 
-    private $channel;
+    public $channel;
 
-    private $mqConf;
+    public $mqConf;
 
     public function __construct($mqName)
     {        

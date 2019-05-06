@@ -32,7 +32,7 @@ class Timer
         ));
 
         $this->serv->on('WorkerStart', array($this, 'onWorkerStart'));
-        $this->serv->on('Connect', array($this, 'onConnect'));
+        $this->serv->on('Connect', array($this, 'onConnect'));                                                                                                                                                                                                                                                                                                                                                                                                      
         $this->serv->on('Receive', array($this, 'onReceive'));
         $this->serv->on('Close', array($this, 'onClose'));
 
@@ -42,25 +42,37 @@ class Timer
 	public function onWorkerStart( $serv , $worker_id) {
         // 在Worker进程开启时绑定定时器
         echo "onWorkerStart\n";
-        
-        swoole_timer_tick(200, function () use ($this){
-            $data = RabbitMQTool::instance('send_msg')->rMq(1);
-            if ($data) {
-                // 处理发送任务
+                
+        $rabbitMQ = RabbitMQTool::instance('send_msg');
+        swoole_timer_tick(200, function () use ($this, &rabbitMQ){            
+            $no_ack = false;
+            $callBack = function ($msg) {
+
+                $rData = json_decode($msg->body, true);
                 $start = microtime(true);
-                $res = $this->handleTask($data[0]);
+                $res = $this->handleTask($rData);
                 $end = microtime(true);
-                // 发送成功
-                if($res){
-                    echo '发送成功！' . json_encode($data[0]) . ', 耗时:'. round($end - $start, 3).'秒'.PHP_EOL;
+
+                // 手动确认
+                if ($res) {
+                    // 发送成功
+                    echo '发送成功！' . json_encode($rData) . ', 耗时:'. round($end - $start, 3).'秒'.PHP_EOL;
+                    // 确认
+                    $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+                } else {
+                    echo '发送失败！' .PHP_EOL;
+                    // 发送失败，消息重新进入队列
+                    $msg->delivery_info['channel']->basic_nack($msg->delivery_info['delivery_tag']);
                 }
-                // 发送失败，把发送失败的加入到失败队列中
-                else{
-                    RabbitMQTool::instance('send_msg_error')->rMq($data[0]);
-                }
-            } else {
-                echo 'queue is empty';
+            };
+
+            $rabbitMq->channel->basic_qos(null, 1, null);
+            $rabbitMq->channel->basic_consume($rabbitMq->mqConf['queue_name'], '', false, $no_ack, false, false, $callBack);
+
+            while (count($rabbitMq->channel->callbacks)) {
+                $rabbitMq->channel->wait();
             }
+            $rabbitMq->closeConn();
         });
     }
 

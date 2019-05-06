@@ -19,7 +19,7 @@ class SendMessage implements SendInterface
 		$filename = $pathname . 'test_send_msg.log';
 
 		$log = "手机号：{$data['mobile']}，发送内容：{$data['content']}\r\n";
-		
+		// sleep(2);
 		file_put_contents($filename, $log, FILE_APPEND);
 
 		return true;
