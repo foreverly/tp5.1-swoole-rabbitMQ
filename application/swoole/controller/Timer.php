@@ -43,8 +43,8 @@ class Timer
         // 在Worker进程开启时绑定定时器
         echo "onWorkerStart\n";
                 
-        $rabbitMQ = RabbitMQTool::instance('send_msg');
-        swoole_timer_tick(200, function () use ($this, &$rabbitMQ){            
+        $rabbitMq = RabbitMQTool::instance('send_msg');
+        swoole_timer_tick(200, function () use ($this, &$rabbitMq){            
             $no_ack = false;
             $callBack = function ($msg) {
 
