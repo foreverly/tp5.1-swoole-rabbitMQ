@@ -44,7 +44,7 @@ class Timer
         echo "onWorkerStart\n";
                 
         $rabbitMQ = RabbitMQTool::instance('send_msg');
-        swoole_timer_tick(200, function () use ($this, &rabbitMQ){            
+        swoole_timer_tick(200, function () use ($this, &$rabbitMQ){            
             $no_ack = false;
             $callBack = function ($msg) {
 
