@@ -84,15 +84,19 @@ class RabbitMQTool {
      * Description:
      * @throws \ErrorException
      */
-    public function rMq($num = 1) {
+    public function rMq($num = 1, $autoAck = false) {
 
         $rData = [];        
-        $callBack = function ($msg) use (&$rData){
+        $callBack = function ($msg) use (&$rData, $autoAck){
             $rData[] = json_decode($msg->body, true);
+
+            if (!$autoAck) {
+                $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+            }
         };
 
         for ($i=0;$i<$num;$i++) {
-            $this->channel->basic_consume($this->mqConf['queue_name'], '', false, true, false, false, $callBack);
+            $this->channel->basic_consume($this->mqConf['queue_name'], '', false, $autoAck, false, false, $callBack);
         }
 
         $this->channel->wait();

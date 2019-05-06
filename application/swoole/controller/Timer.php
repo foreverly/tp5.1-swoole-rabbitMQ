@@ -12,11 +12,13 @@ class Timer
 	private $serv;
 
 	public function __construct()
-	{
-        // var_dump(RabbitMQTool::instance('test')->rMq());exit;
-
-        // if ($data = RabbitMQTool::instance('send_msg')->rMq(1)) {
-        //     echo $this->handleTask($data[0]);
+	{            
+        // while (true) {
+        //     if ($data = RabbitMQTool::instance('send_msg')->rMq(1)) {
+        //         echo $this->handleTask($data[0]);
+        //     }else{
+        //         echo 'empty';
+        //     }
         // }
 
         $this->serv = new swoole_server("0.0.0.0", 9501);

@@ -58,10 +58,18 @@ class Index extends Controller
             case 'mobile':
                 $sms_config = [];
                 $sendClass = new SendMessage($sms_config);
+                $sendData = [
+                    'mobile' => $mobile,
+                    'content' => $content
+                ];
                 break;            
             case 'email':                  
                 $smtp_config = [];             
                 $sendClass = new SendEmail($smtp_config);
+                $sendData = [
+                    'email' => $email,
+                    'content' => $content
+                ];
                 break;
             default:
                 return ajaxError('暂不支持该发送类型');
@@ -72,10 +80,7 @@ class Index extends Controller
         	$data = [
         		'type' => 'MSG',
                 'sendClass' => serialize($sendClass),
-        		'data' => [
-        			'mobile' => $mobile,
-        			'content' => $content
-        		]
+        		'data' => $sendData
         	];
 
             // 写入队列
