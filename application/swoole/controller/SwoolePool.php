@@ -9,10 +9,11 @@ use app\common\servant\SendServant;
 
 class SwoolePool extends Command
 {
+    // swoole进程池
     private $pool;
-    // 工作者实例对象
+    // 服务进程对象列表
     private $servantInstanceList = [];
-    // 配置服务
+    // 配置服务进程
     private static $config = [];
 
     public function __construct(string $name = null)
@@ -30,8 +31,8 @@ class SwoolePool extends Command
         $this->pool = new Pool($workerNum);
 
         //绑定方法
-        $this->pool->on("WorkerStart", [$this, 'onWorkerStart']);
-        $this->pool->on("WorkerStop", [$this, 'onWorkerStop']);
+        $this->pool->on("WorkerStart", [$this, 'swooleWork']);
+        $this->pool->on("WorkerStop", [$this, 'swooleStop']);
 
         $this->pool->start();
     }
@@ -40,18 +41,19 @@ class SwoolePool extends Command
     {
         $this->setName('SwooleMainProcess')->setDescription('生产者消费者工作的主线程');
     }
-
+    
     protected function execute(Input $input, Output $output)
     {
         $output->writeln('execute success');
         $this->pool->start();
     }
+
     /**
      * 线程具体工作内容
      * @param $pool 线程池对象
      * @param $workerId 线程id
      */
-    function onWorkerStart(Pool $pool, int $workerId)
+    function swooleWork(Pool $pool, int $workerId)
     {
         $servant = self::getServant($workerId);
         //实例队列
@@ -64,7 +66,7 @@ class SwoolePool extends Command
      * @param $pool 线程池对象
      * @param $workerId 线程id
      */
-    function onWorkerStop(Pool $pool, int $workerId)
+    function swooleStop(Pool $pool, int $workerId)
     {
         $this->output->writeln("Worker#{$workerId} is stopped\n");
         //删除内存里面的对象

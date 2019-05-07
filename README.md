@@ -55,6 +55,9 @@
 
 ## 六
 
-测试首页请求后，进入public，运行如下代码监听rabbitmq队列
-> php swoole.php
+1.测试首页请求后，进入public，运行如下代码监听rabbitmq队列
+> php pool.php
+
+2.或者使用thinkphp自定义命令行
+> php think SwoolePool
 
