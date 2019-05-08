@@ -2,6 +2,7 @@
 namespace app\index\controller;
 
 use think\Controller;
+use app\index\model\echartsModel;
 use think\Request;
 use Redis;
 
@@ -26,6 +27,7 @@ class Echarts extends Controller
     {
         
         $this->assign('domain','tp-dev.com');
+        $this->assign('echarts', (new echartsModel())->getData());
 
         //渲染模板
         return $this->fetch();
@@ -33,11 +35,6 @@ class Echarts extends Controller
 
     public function getData()
     {
-        $data = [];
-        for ($i=0; $i < 50; $i++) { 
-            # code...
-        }
-
-        return $data;
+        return ajaxSuccess((new echartsModel())->getData());
     }
 }

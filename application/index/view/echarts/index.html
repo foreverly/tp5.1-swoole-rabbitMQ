@@ -45,11 +45,28 @@ require(
 		    toolbox: {
 		        show : true,
 		        feature : {
-		            mark : {show: true},
-		            dataView : {show: true, readOnly: false},
-		            magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-		            restore : {show: true},
-		            saveAsImage : {show: true}
+		            mark : {
+		            	show: false // 辅助线
+		            },
+		            dataView : {
+		            	show: true, // 数据视图
+		            	readOnly: false
+		            },
+		            magicType : {
+		            	show: false, // 表格类型切换
+		            	type: [
+			            	'line', 
+			            	'bar', 
+			            	'stack', 
+			            	'tiled'
+			            ]
+		        	},
+		            restore : {
+		            	show: false // 还原
+		            },
+		            saveAsImage : {
+		            	show: true // 保存图片
+		            }
 		        }
 		    },
 		    calculable : true,
@@ -99,8 +116,47 @@ require(
 		    ]
 		};
 
-        // 为echarts对象加载数据 
-        myChart.setOption(option); 
+		$.ajax({
+			type:"POST",
+			url:"/index.php/index/echarts/getData",
+			data:{},
+			dataType:'json',
+			success:function(res){
+				var data = res.data;
+
+				if (data) {
+
+					var names = [];
+					var categorys = [];					
+
+					for (var i = 0; i < data.length; i++) {
+
+						var series = [];
+						var curData = data[i].data;
+
+						names.push(data[i].name);
+						
+						for (var j = 0; j < curData.length; j++) {
+							
+							if (categorys.length < curData.length) {
+								categorys.push(curData[j].date);
+							}
+
+							series.push(curData[j].num);
+						}
+
+						option.series[i].name = data[i].name;
+						option.series[i].data = series;
+					}
+
+					option.legend.data = names;
+					option.xAxis[0].data = categorys;
+				}
+
+				// 为echarts对象加载数据 
+        		myChart.setOption(option); 
+			}
+		})
     }
 );
 
