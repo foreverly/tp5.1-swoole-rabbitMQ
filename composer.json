@@ -20,7 +20,8 @@
         "topthink/framework": "^5.1",
         "topthink/think-helper": "^3.0",
         "topthink/think-swoole": "^2.0",
-        "php-amqplib/php-amqplib": "^2.9"
+        "php-amqplib/php-amqplib": "^2.9",
+        "fukuball/jieba-php": "dev-master"
     },
     "autoload": {
         "psr-4": {
